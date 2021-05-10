@@ -1,6 +1,8 @@
 # TE Smart - SmartHome solution for your modern home
 
 > TE Smart is also called TES. Established by Anthony and NhHao.
+> 
+> The first time of establishment, we called Meow, then Huy Mafia changed the name to "TES" as now.
 >
 > We specialize in providing services and solutions for smart home systems.
 >
