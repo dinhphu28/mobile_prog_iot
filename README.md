@@ -1,6 +1,6 @@
 # TE Smart - SmartHome solution for your modern home
 
-> TE Smart is also called TES. Establish by Anthony and NhHao.
+> TE Smart is also called TES. Established by Anthony and NhHao.
 >
 > We specialize in providing services and solutions for smart home systems.
 >
