@@ -6,6 +6,7 @@ import java.util.List;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
+import javax.ws.rs.HeaderParam;
 import javax.ws.rs.POST;
 import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
@@ -19,6 +20,7 @@ import com.anthony.smarthome.Entities.devices;
 import com.anthony.smarthome.Models.devices.AdapterDevices;
 import com.anthony.smarthome.Models.devices.devicesModel;
 import com.anthony.smarthome.Models.devices.devicesNewModel;
+import com.anthony.smarthome.Security.JWT.jwt;
 import com.anthony.smarthome.Services.devicesService;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,18 +37,30 @@ public class devicesREST {
      */
     @GET
     @Produces(MediaType.APPLICATION_JSON)
-    public Response GetAllDevices() {
-        List<devicesModel> listDevices = new ArrayList<devicesModel>();
+    public Response GetAllDevices(@HeaderParam("Authorization") String authorization) {
+        jwt meojwt = new jwt();
 
-        List<devices> listdeviceEnt = new ArrayList<devices>();
+        String token = authorization.substring(7); //Bearer <token>
 
-        listdeviceEnt = service.getall();
+        boolean zz = false;
 
-        for(devices ii : listdeviceEnt) {
-            listDevices.add(new devicesModel(ii));
+        zz = meojwt.VerifyToken(token);
+
+        if(zz) {
+            List<devicesModel> listDevices = new ArrayList<devicesModel>();
+
+            List<devices> listdeviceEnt = new ArrayList<devices>();
+
+            listdeviceEnt = service.getall();
+
+            for(devices ii : listdeviceEnt) {
+                listDevices.add(new devicesModel(ii));
+            }
+
+            return Response.status(Status.OK).entity(listDevices).build();
+        } else {
+            return Response.status(Status.UNAUTHORIZED).entity("\"Invalid token!\"").build();
         }
-
-        return Response.status(Status.OK).entity(listDevices).build();
     }
 
     /**
@@ -57,26 +71,38 @@ public class devicesREST {
     @GET
     @Path("/{id}")
     @Produces(MediaType.APPLICATION_JSON)
-    public Response GetOneDevice(@PathParam("id") Integer id) {
-        devicesModel dvcM = null;
+    public Response GetOneDevice(@PathParam("id") Integer id, @HeaderParam("Authorization") String authorization) {
+        jwt meojwt = new jwt();
 
-        boolean kk = false;
-        try {
-            devices dvcEnt = service.getone(id);
+        String token = authorization.substring(7); //Bearer <token>
 
-            dvcM = new devicesModel(dvcEnt);
+        boolean zz = false;
 
-            if(dvcM != null) {
-                kk = true;
+        zz = meojwt.VerifyToken(token);
+
+        if(zz) {
+            devicesModel dvcM = null;
+
+            boolean kk = false;
+            try {
+                devices dvcEnt = service.getone(id);
+
+                dvcM = new devicesModel(dvcEnt);
+
+                if(dvcM != null) {
+                    kk = true;
+                }
+            } catch (Exception e) {
+                //TODO: handle exception
             }
-        } catch (Exception e) {
-            //TODO: handle exception
-        }
 
-        if(kk) {
-            return Response.ok(dvcM).build();
+            if(kk) {
+                return Response.ok(dvcM).build();
+            } else {
+                return Response.status(Status.NOT_FOUND).entity("{\"Message\": \"Not found this device!\"}").build();
+            }
         } else {
-            return Response.status(Status.NOT_FOUND).entity("{\"Message\": \"Not found this device!\"}").build();
+            return Response.status(Status.UNAUTHORIZED).entity("\"Invalid token!\"").build();
         }
     }
 
@@ -88,29 +114,41 @@ public class devicesREST {
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.TEXT_PLAIN)
-    public Response CreateNewDevice(devicesNewModel device) {
-        if(device.getDeviceName() == null || device.getDeviceDescription() == null) {
-            return Response.status(Status.BAD_REQUEST).entity("Invalid input!").build();
-        }
+    public Response CreateNewDevice(@HeaderParam("Authorization") String authorization, devicesNewModel device) {
+        jwt meojwt = new jwt();
 
-        devices tmpDevicesEnt = null;
+        String token = authorization.substring(7); //Bearer <token>
 
-        boolean kk = false;
+        boolean zz = false;
 
-        try {
-            tmpDevicesEnt = new AdapterDevices().convertFromModelToDeviceEntity(device);
+        zz = meojwt.VerifyToken(token);
 
-            service.create(tmpDevicesEnt);
+        if(zz) {
+            if(device.getDeviceName() == null || device.getDeviceDescription() == null) {
+                return Response.status(Status.BAD_REQUEST).entity("Invalid input!").build();
+            }
 
-            kk = true;
-        } catch (Exception e) {
-            //TODO: handle exception
-        }
+            devices tmpDevicesEnt = null;
 
-        if(kk) {
-            return Response.status(Status.CREATED).entity("Created new device!").build();
+            boolean kk = false;
+
+            try {
+                tmpDevicesEnt = new AdapterDevices().convertFromModelToDeviceEntity(device);
+
+                service.create(tmpDevicesEnt);
+
+                kk = true;
+            } catch (Exception e) {
+                //TODO: handle exception
+            }
+
+            if(kk) {
+                return Response.status(Status.CREATED).entity("Created new device!").build();
+            } else {
+                return Response.status(Status.BAD_REQUEST).entity("Invalid info!").build();
+            }
         } else {
-            return Response.status(Status.BAD_REQUEST).entity("Invalid info!").build();
+            return Response.status(Status.UNAUTHORIZED).entity("\"Invalid token!\"").build();
         }
     }
 
