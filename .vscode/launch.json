@@ -1,0 +1,14 @@
+{
+    "configurations": [
+        {
+            "type": "java",
+            "name": "Spring Boot-SmarthomeApplication<smarthome>",
+            "request": "launch",
+            "cwd": "${workspaceFolder}",
+            "console": "internalConsole",
+            "mainClass": "com.anthony.smarthome.SmarthomeApplication",
+            "projectName": "smarthome",
+            "args": ""
+        }
+    ]
+}

@@ -21,7 +21,7 @@ public class accounts {
     @Column(name = "uname")
     private String username;    // max length: 20
 
-    @Column(name = "passwd")
+    @Column(name = "passwd", nullable = false)
     private String password;    // max length: 50
 
     @Column(name = "accounttype")
