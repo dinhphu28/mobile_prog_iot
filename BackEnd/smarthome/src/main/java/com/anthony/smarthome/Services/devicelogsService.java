@@ -1,5 +1,7 @@
 package com.anthony.smarthome.Services;
 
+import java.util.List;
+
 import com.anthony.smarthome.Entities.devicelogs;
 import com.anthony.smarthome.JpaRepo.devicelogsRepo;
 
@@ -17,7 +19,9 @@ public class devicelogsService {
         return repo.findById(id).get();
     }
 
-
+    public List<devicelogs> gettop10ofonedevice(Integer id) {
+        return repo.findTop10BydeviceIdOrderByIdDesc(id);
+    }
 
     public boolean create(devicelogs dlog) {
         devicelogs tmp = null;
@@ -25,7 +29,7 @@ public class devicelogsService {
         boolean kk = false;
 
         try {
-            dlog.setId(0);
+            // tmp = getone(dlog.getId());
 
             repo.save(dlog);
 

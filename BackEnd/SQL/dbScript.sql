@@ -52,8 +52,8 @@ CREATE TABLE devicelogs (
 	deviceid INT REFERENCES dbo.devices(cid) NOT NULL,
 	bitvalue BIT NOT NULL DEFAULT 0,
 	decimalvalue FLOAT NOT NULL DEFAULT 0,
-	daterecord DATE NOT NULL,
-	timerecord TIME NOT NULL,
+	daterecord DATE NOT NULL DEFAULT GETDATE(),
+	timerecord TIME NOT NULL DEFAULT GETDATE(),
 
 	PRIMARY KEY(cid)
 )

@@ -1,5 +1,7 @@
 package com.anthony.smarthome.REST.v1.devices;
 
+import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -16,11 +18,13 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 
+import com.anthony.smarthome.Entities.devicelogs;
 import com.anthony.smarthome.Entities.devices;
 import com.anthony.smarthome.Models.devices.AdapterDevices;
 import com.anthony.smarthome.Models.devices.devicesModel;
 import com.anthony.smarthome.Models.devices.devicesNewModel;
 import com.anthony.smarthome.Security.JWT.jwt;
+import com.anthony.smarthome.Services.devicelogsService;
 import com.anthony.smarthome.Services.devicesService;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,8 +35,12 @@ public class devicesREST {
     @Autowired
     private devicesService service;
 
+    @Autowired
+    devicelogsService tmpservice;
+
     /**
      *
+     * @param authorization
      * @return
      */
     @GET
@@ -66,6 +74,7 @@ public class devicesREST {
     /**
      *
      * @param id
+     * @param authorization
      * @return
      */
     @GET
@@ -108,6 +117,7 @@ public class devicesREST {
 
     /**
      *
+     * @param authorization
      * @param device
      * @return
      */
@@ -133,7 +143,7 @@ public class devicesREST {
             boolean kk = false;
 
             try {
-                tmpDevicesEnt = new AdapterDevices().convertFromModelToDeviceEntity(device);
+                tmpDevicesEnt = new AdapterDevices().convertFromNewModelToDeviceEntity(device);
 
                 service.create(tmpDevicesEnt);
 
@@ -154,6 +164,7 @@ public class devicesREST {
 
     /**
      *
+     * @param authorization
      * @param id
      * @param device
      * @return
@@ -162,63 +173,102 @@ public class devicesREST {
     @Path("/{id}")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.TEXT_PLAIN)
-    public Response UpdateDevice(@PathParam("id") Integer id, devicesModel device) {
-        if(device.getDeviceName() == null || device.getDeviceDescription() == null) {
-            return Response.status(Status.BAD_REQUEST).entity("Invalid input!").build();
-        }
+    public Response UpdateDevice(@HeaderParam("Authorization") String authorization, @PathParam("id") Integer id, devicesModel device) {
+        jwt meojwt = new jwt();
 
-        devices tmpDevicesEnt = null;
+        String token = authorization.substring(7); //Bearer <token>
 
-        boolean kk = false;
+        boolean zz = false;
 
-        try {
-            tmpDevicesEnt = service.getone(id);
+        zz = meojwt.VerifyToken(token);
 
-            if(tmpDevicesEnt != null) {
-                service.save(tmpDevicesEnt);
-
-                kk = true;
+        if(zz) {
+            if(device.getDeviceName() == null || device.getDeviceDescription() == null) {
+                return Response.status(Status.BAD_REQUEST).entity("Invalid input!").build();
             }
-        } catch (Exception e) {
-            //TODO: handle exception
-        }
 
-        if(kk) {
-            return Response.status(Status.OK).entity("Updated devices!").build();
+            devices tmpDevicesEnt = null;
+
+            devicelogs tmplog = new devicelogs();
+
+            boolean kk = false;
+
+            try {
+                tmpDevicesEnt = service.getone(id);
+
+                if(tmpDevicesEnt != null) {
+                    tmpDevicesEnt = new AdapterDevices().convertFromModelToDeviceEntity(device);
+
+                    kk = service.save(tmpDevicesEnt);
+
+                    LocalDate dtr = LocalDate.now();
+                    LocalTime tmr = LocalTime.now();
+
+                    tmplog.setId(null);
+                    tmplog.setDeviceId(id);
+                    tmplog.setBitValue(device.isBitValue());
+                    tmplog.setDecimalValue(device.getDecimalValue());
+                    tmplog.setDateRecord(dtr);
+                    tmplog.setTimeRecord(tmr);
+
+                    kk = tmpservice.create(tmplog);
+                }
+            } catch (Exception e) {
+                //TODO: handle exception
+            }
+
+            if(kk) {
+                return Response.status(Status.OK).entity("Updated devices!").build();
+            } else {
+                return Response.status(Status.BAD_REQUEST).entity("Invalid Info!").build();
+            }
         } else {
-            return Response.status(Status.BAD_REQUEST).entity("Invalid Info!").build();
+            return Response.status(Status.UNAUTHORIZED).entity("\"Invalid token!\"").build();
         }
     }
 
     /**
      *
+     * @param authorization
      * @param id
      * @return
      */
     @DELETE
     @Path("/{id}")
     @Produces(MediaType.TEXT_PLAIN)
-    public Response DeleteDevice(@PathParam("id") Integer id) {
-        boolean kk = false;
+    public Response DeleteDevice(@HeaderParam("Authorization") String authorization, @PathParam("id") Integer id) {
+        jwt meojwt = new jwt();
 
-        try {
-            devices dvc = null;
+        String token = authorization.substring(7); //Bearer <token>
 
-            dvc = service.getone(id);
+        boolean zz = false;
 
-            if(dvc != null) {
-                kk = service.delete(id);
+        zz = meojwt.VerifyToken(token);
 
-                kk = true;
+        if(zz) {
+            boolean kk = false;
+
+            try {
+                devices dvc = null;
+
+                dvc = service.getone(id);
+
+                if(dvc != null) {
+                    kk = service.delete(id);
+
+                    kk = true;
+                }
+            } catch (Exception e) {
+                //TODO: handle exception
             }
-        } catch (Exception e) {
-            //TODO: handle exception
-        }
 
-        if(kk) {
-            return Response.status(Status.OK).entity("Deleted device!").build();
+            if(kk) {
+                return Response.status(Status.OK).entity("Deleted device!").build();
+            } else {
+                return Response.status(Status.BAD_REQUEST).entity("Device not found!").build();
+            }
         } else {
-            return Response.status(Status.BAD_REQUEST).entity("Device not found!").build();
+            return Response.status(Status.UNAUTHORIZED).entity("\"Invalid token!\"").build();
         }
     }
 }
