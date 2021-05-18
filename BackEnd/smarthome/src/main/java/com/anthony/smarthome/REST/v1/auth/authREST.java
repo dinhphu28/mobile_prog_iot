@@ -29,7 +29,7 @@ public class authREST {
      */
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
-    @Produces(MediaType.TEXT_PLAIN)
+    @Produces(MediaType.APPLICATION_JSON)
     public Response signin(signinModel acc) {
         if(acc.getUsername() == null || acc.getPassword() == null) {
             return Response.status(Status.BAD_REQUEST).entity("Invalid info!").build();
@@ -53,9 +53,9 @@ public class authREST {
         String tokenString = meojwt.GenerateToken(acc.getUsername());
 
         if(kk) {
-            return Response.status(Status.OK).entity("Bearer " + tokenString).build();
+            return Response.status(Status.OK).entity("{ \"token\" : \"" + tokenString + "\" }").build();
         } else {
-            return Response.status(Status.BAD_REQUEST).entity("Invalid Sign In Info!").build();
+            return Response.status(Status.BAD_REQUEST).entity("\"Invalid Sign In Info!\"").build();
         }
     }
 
