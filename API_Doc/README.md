@@ -4,6 +4,8 @@ Link: http://localhost:8080/api/v1/auth
 
 ## POST:
 
+> Use to login
+
 ### Request:
 
 #### Header:
@@ -41,6 +43,8 @@ Status code: 400
 ```
 
 ## PUT:
+
+> Use to change password of user
 
 ### Request:
 
@@ -91,6 +95,8 @@ Link: http://localhost:8080/api/v1/devices
 
 ## GET:
 
+> Use to get info of all devices
+
 ### Request:
 
 #### Header:
@@ -132,6 +138,8 @@ Status code: 200
 
 Link: http://localhost:8080/api/v1/devices/1
 
+> Use to get all info of one device
+
 ### Request:
 
 #### Header:
@@ -159,6 +167,8 @@ Status Code: 200
 ```
 
 ## POST:
+
+> Use to create new device
 
 ### Request:
 
@@ -189,7 +199,47 @@ Status code: 201
 Created new device!
 ```
 
+## PUT:
+
+Link: http://localhost:8080/api/v1/devices/1
+
+> Use to update info of one device
+
+### Request:
+
+#### Header:
+
+> Content-Type: application/json
+>
+> Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhZG1pbiIsImlzcyI6ImF1dGgwIn0.f1qc-fvEuI-k_PErFZuLYYXcX8QejY6Cy25a9xdz0QE
+
+#### Body:
+
+```json
+{
+  "id": 1,
+  "deviceName": "light",
+  "deviceDescription": "Đèn Điện",
+  "deviceType": false,
+  "dataType": false,
+  "bitValue": true,
+  "decimalValue": 0.0
+}
+```
+
+### Response:
+
+Status code: 200
+
+#### Body:
+
+```text
+Updated devices!
+```
+
 ## DELETE:
+
+> Use to delete one device
 
 ### Request:
 
@@ -214,6 +264,8 @@ Deleted device!
 Link: http://localhost:8080/api/v1/devices/logs
 
 ## GET:
+
+> Use to get logs of one devices (last 10 instance)
 
 Link: http://localhost:8080/api/v1/devices/logs/1
 
