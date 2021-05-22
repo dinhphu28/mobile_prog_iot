@@ -4,7 +4,7 @@ Link: http://localhost:8080/api/v1/auth
 
 ## POST:
 
-> Use to login
+> Generates an access token for authorizing a user.
 
 ### Request:
 
@@ -44,7 +44,7 @@ Status code: 400
 
 ## PUT:
 
-> Use to change password of user
+> Updates password for an existing user.
 
 ### Request:
 
@@ -95,7 +95,7 @@ Link: http://localhost:8080/api/v1/devices
 
 ## GET:
 
-> Use to get info of all devices
+> Retrieves information of all the devcies.
 
 ### Request:
 
@@ -138,7 +138,7 @@ Status code: 200
 
 Link: http://localhost:8080/api/v1/devices/1
 
-> Use to get all info of one device
+> Retrieves information of a single device instance with the specified ID.
 
 ### Request:
 
@@ -168,7 +168,7 @@ Status Code: 200
 
 ## POST:
 
-> Use to create new device
+> Creates devices.
 
 ### Request:
 
@@ -203,7 +203,7 @@ Created new device!
 
 Link: http://localhost:8080/api/v1/devices/1
 
-> Use to update info of one device
+> Updates information of an existing device instance.
 
 ### Request:
 
@@ -239,7 +239,7 @@ Updated devices!
 
 ## DELETE:
 
-> Use to delete one device
+> Deletes an existing device instance.  
 
 ### Request:
 
@@ -265,7 +265,7 @@ Link: http://localhost:8080/api/v1/devices/logs
 
 ## GET:
 
-> Use to get logs of one devices (last 10 instance)
+> Retrieves the last 10 logs for a device with the specified ID.
 
 Link: http://localhost:8080/api/v1/devices/logs/1
 
@@ -396,4 +396,3 @@ ___NOTE:___
   - false: off
 - decimalValue:
   - 29.8
-
