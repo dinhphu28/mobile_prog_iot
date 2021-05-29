@@ -173,7 +173,7 @@ public class devicesREST {
     @Path("/{id}")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.TEXT_PLAIN)
-    public Response UpdateDevice(@HeaderParam("Authorization") String authorization, @PathParam("id") Integer id, devicesModel device) {
+    public Response UpdateDevice(@HeaderParam("Authorization") String authorization, @PathParam("id") Integer id, devicesNewModel device) {
         jwt meojwt = new jwt();
 
         String token = authorization.substring(7); //Bearer <token>
@@ -197,7 +197,8 @@ public class devicesREST {
                 tmpDevicesEnt = service.getone(id);
 
                 if(tmpDevicesEnt != null) {
-                    tmpDevicesEnt = new AdapterDevices().convertFromModelToDeviceEntity(device);
+                    tmpDevicesEnt = new AdapterDevices().convertFromNewModelToDeviceEntity(device);
+                    tmpDevicesEnt.setId(id);
 
                     kk = service.save(tmpDevicesEnt);
 
