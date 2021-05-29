@@ -217,7 +217,6 @@ Link: http://localhost:8080/api/v1/devices/1
 
 ```json
 {
-  "id": 1,
   "deviceName": "light",
   "deviceDescription": "Đèn Điện",
   "deviceType": false,
