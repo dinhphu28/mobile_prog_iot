@@ -2,4 +2,7 @@
 
 ## Supported devices (up to now)
 
-- [x] Node ESP8266
+- [x] NodeMCU ESP8266
+- [x] ESP32
+- [x] Arduino could be connected to network
+
