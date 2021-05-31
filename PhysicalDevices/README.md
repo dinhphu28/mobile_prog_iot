@@ -2,5 +2,4 @@
 
 ## Supported devices (up to now)
 
-- [x] NodeMCU ESP8266
-- [x] ESP 32
+- [x] Node ESP8266
