@@ -40,4 +40,8 @@ public class devicelogsService {
 
         return kk;
     }
+
+    public Long deleteallofonedevice(Integer id) {
+        return repo.deleteBydeviceId(id);
+    }
 }
