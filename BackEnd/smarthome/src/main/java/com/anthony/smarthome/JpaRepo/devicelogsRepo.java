@@ -10,4 +10,6 @@ import org.springframework.data.jpa.repository.Query;
 public interface devicelogsRepo extends JpaRepository<devicelogs, Integer> {
 
     List<devicelogs> findTop10BydeviceIdOrderByIdDesc(Integer id);
+
+    Long deleteBydeviceId(Integer id);
 }
