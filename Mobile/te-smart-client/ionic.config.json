@@ -1,0 +1,7 @@
+{
+  "name": "TE-Smart",
+  "integrations": {
+    "capacitor": {}
+  },
+  "type": "vue"
+}
