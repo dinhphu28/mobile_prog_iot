@@ -19,6 +19,7 @@
 </template>
 
 <script>
+import axios from 'axios'
 import {
     IonCard,
     IonCardHeader,
@@ -39,7 +40,28 @@ export default {
     },
     methods: {
         handleChangeState() {
-            console.log('Hi')
+            const domain = this.$store.state.domain
+            const token = this.$store.state.token
+            const config = {
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                },
+            }
+            const data = {
+                ...this.device,
+                bitValue: !this.device.bitValue,
+            }
+            axios
+                .put(`${domain}/api/v1/devices/${this.device.id}`, data, config)
+                .then(() => {
+                    axios
+                        .get(`${domain}/api/v1/devices`, config)
+                        .then((res) => {
+                            this.$store.dispatch('saveDevices', res.data)
+                        })
+                        .catch((err) => console.log(err))
+                })
+                .catch((err) => console.log(err))
         },
     },
 }

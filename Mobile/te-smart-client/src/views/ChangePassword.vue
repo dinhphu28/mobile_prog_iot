@@ -1,7 +1,7 @@
 <template>
     <ion-page>
         <ion-content>
-            <h1 class="header ion-text-center">Login to TE Smart</h1>
+            <h1 class="header ion-text-center">Change your password</h1>
             <form @submit.prevent class="ion-padding ion">
                 <ion-list>
                     <ion-item>
@@ -21,25 +21,46 @@
                         ></ion-input>
                     </ion-item>
                     <ion-item>
-                        <ion-label position="floating">Password</ion-label>
+                        <ion-label position="floating">Old password</ion-label>
                         <ion-input
                             type="password"
-                            v-model="password"
+                            v-model="oldPassword"
                             @input="errorMessage = ''"
-                            @keydown.enter="handleLogin"
+                            @keydown.enter="handleChangePassword"
                         ></ion-input>
                     </ion-item>
+                    <ion-item>
+                        <ion-label position="floating">New password</ion-label>
+                        <ion-input
+                            type="password"
+                            v-model="newPassword1st"
+                            @input="errorMessage = ''"
+                            @keydown.enter="handleChangePassword"
+                        ></ion-input>
+                    </ion-item>
+                    <ion-item>
+                        <ion-label position="floating"
+                            >Type new password again</ion-label
+                        >
+                        <ion-input
+                            type="password"
+                            v-model="newPassword2nd"
+                            @input="errorMessage = ''"
+                            @keydown.enter="handleChangePassword"
+                        ></ion-input>
+                    </ion-item>
+
                     <p class="invalid-error" v-if="errorMessage !== ''">
                         {{ errorMessage }}
                     </p>
                     <ion-button
-                        @click="handleLogin"
                         expand="block"
                         class="login-button"
-                        >Login</ion-button
+                        @click="handleChangePassword"
+                        >Change password</ion-button
                     >
-                    <router-link to="/change-password" class="router-link"
-                        >Change your password</router-link
+                    <router-link to="/login" class="router-link"
+                        >Back to login</router-link
                     >
                 </ion-list>
             </form>
@@ -59,44 +80,6 @@ import {
     IonButton,
 } from '@ionic/vue'
 export default {
-    data: () => ({
-        username: '',
-        password: '',
-        domain: '',
-        errorMessage: '',
-    }),
-    methods: {
-        handleLogin() {
-            if (
-                this.username === '' ||
-                this.password === '' ||
-                this.domain === ''
-            ) {
-                this.errorMessage = 'Please fill all fields!'
-                return
-            }
-            this.$store.dispatch('saveDomain', this.domain)
-            const account = {
-                username: this.username,
-                password: this.password,
-                accountType: 1,
-            }
-            axios
-                .post(`${this.domain}/api/v1/auth`, account)
-                .then((res) => {
-                    this.$store
-                        .dispatch('saveToken', res.data.token)
-                        .then(() => {
-                            this.$router.push('/home/devices')
-                        })
-                })
-                .catch(
-                    () =>
-                        (this.errorMessage =
-                            'Domain, username or password is invalid. Please try again!')
-                )
-        },
-    },
     components: {
         IonPage,
         IonInput,
@@ -105,6 +88,49 @@ export default {
         IonList,
         IonContent,
         IonButton,
+    },
+    data: () => ({
+        domain: '',
+        username: '',
+        oldPassword: '',
+        newPassword1st: '',
+        newPassword2nd: '',
+        errorMessage: '',
+    }),
+    methods: {
+        handleChangePassword() {
+            if (
+                this.domain === '' ||
+                this.username === '' ||
+                this.oldPassword === '' ||
+                this.newPassword1st === '' ||
+                this.newPassword2nd === ''
+            ) {
+                this.errorMessage = 'Please fill all fields!'
+                console.log(this.errMessage)
+                return
+            }
+            if (this.newPassword1st !== this.newPassword2nd) {
+                this.errorMessage = `Passwords aren't match!`
+                return
+            }
+            const account = {
+                username: this.username,
+                oldPassword: this.oldPassword,
+                newPassword: this.newPassword1st,
+                accountType: 1,
+            }
+            axios
+                .put(`${this.domain}/api/v1/auth`, account)
+                .then(() => {
+                    this.$router.push('/login')
+                })
+                .catch(
+                    () =>
+                        (this.errorMessage =
+                            'Domain, username or old password is invalid!')
+                )
+        },
     },
 }
 </script>

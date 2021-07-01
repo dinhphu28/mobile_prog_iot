@@ -3,6 +3,7 @@ import { createStore } from 'vuex'
 export default createStore({
     state: () => ({
         token: '',
+        domain: '',
         devices: [],
     }),
     mutations: {
@@ -12,6 +13,9 @@ export default createStore({
         SAVE_DEVICES(state, devices) {
             state.devices = devices
         },
+        SAVE_DOMAIN(state, domain) {
+            state.domain = domain
+        },
     },
     actions: {
         saveToken({ commit }, token) {
@@ -19,6 +23,9 @@ export default createStore({
         },
         saveDevices({ commit }, devices) {
             commit('SAVE_DEVICES', devices)
+        },
+        saveDomain({ commit }, domain) {
+            commit('SAVE_DOMAIN', domain)
         },
     },
 })
